@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Coexistence Pro - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>School Coexistence <strong>Pro</strong></span>
+            </div>
+            <nav class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+                <a href="{{ url_for('profesores') }}" class="nav-link"><i class="fa-solid fa-chalkboard-user"></i> Profesores</a>
+                <a href="{{ url_for('reportes') }}" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Reportes</a>
+                <a href="{{ url_for('configuracion') }}" class="nav-link"><i class="fa-solid fa-gear"></i> Configuración</a>
+            </nav>
+            <div class="nav-user">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>{{ session.get('usuario', 'Admin') }}</span>
+                <a href="{{ url_for('logout') }}" title="Cerrar Sesión" style="color: #f87171; margin-left: 10px;"><i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Contenedor para notificaciones flotantes (Toasts) de JavaScript -->
+    <div id="toastContainer"></div>
+
+    <footer>
+        <p>&copy; 2026 - Módulo Avanzado de Convivencia Escolar | Versión 3.0 Interactiva</p>
+    </footer>
+
+    <!-- Script Global de Interactividad -->
+    <script>
+        function mostrarToast(mensaje, icono = "fa-circle-check") {
+            const container = document.getElementById('toastContainer');
+            if(!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fa-solid ${icono}" style="color: #34d399; font-size: 1.2rem;"></i> <span>${mensaje}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

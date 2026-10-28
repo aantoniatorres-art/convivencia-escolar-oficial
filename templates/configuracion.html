@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-flex">
+    <div>
+        <h2>Configuración del Sistema</h2>
+        <p>Administra los parámetros generales del año escolar y las normativas de asistencia.</p>
+    </div>
+</div>
+
+<div class="config-container">
+    <div class="config-card">
+        <div class="config-header">
+            <i class="fa-solid fa-sliders"></i>
+            <h3>Parámetros de Alerta</h3>
+        </div>
+        <form onsubmit="event.preventDefault(); alert('Configuración guardada exitosamente');">
+            <div class="form-group">
+                <label>Máximo de atrasos permitidos antes de estado "Observación":</label>
+                <input type="number" value="3" class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Máximo de inasistencias para alerta "Crítico":</label>
+                <input type="number" value="5" class="form-input">
+            </div>
+            <button type="submit" class="btn-formal">Guardar Cambios</button>
+        </form>
+    </div>
+
+    <div class="config-card">
+        <div class="config-header">
+            <i class="fa-solid fa-database"></i>
+            <h3>Gestión de Base de Datos</h3>
+        </div>
+        <p class="config-desc">Realiza respaldos periódicos de la información de los estudiantes o restablece los registros de asistencia del período actual.</p>
+        <div class="config-actions">
+            <button class="btn-secondary" onclick="alert('Respaldo descargado correctamente.')"><i class="fa-solid fa-download"></i> Descargar Backup</button>
+            <button class="btn-danger" onclick="alert('Acción restringida a perfiles SuperAdmin.')"><i class="fa-solid fa-trash-can"></i> Reiniciar Registros</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

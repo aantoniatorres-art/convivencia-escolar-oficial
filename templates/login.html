@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Docente - Convivencia Escolar Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-body-formal">
+    <div class="login-card-formal">
+        <div class="login-icon-formal"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h2>Convivencia Escolar</h2>
+        <p>Ingrese su correo institucional para acceder al sistema de gestión.</p>
+        
+        {% if error %}
+            <div class="alert-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="form-group" style="text-align: left; margin-bottom: 20px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: #334155; display: block; margin-bottom: 8px;">Correo Institucional</label>
+                <input type="email" name="correo" placeholder="ej: ana.torres@colegio.cl" required class="form-input">
+            </div>
+            <button type="submit" class="btn-formal" style="width: 100%; padding: 12px; font-size: 0.95rem;">Enviar Código de Acceso</button>
+        </form>
+    </div>
+</body>
+</html>

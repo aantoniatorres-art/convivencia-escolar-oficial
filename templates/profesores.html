@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-flex">
+    <div>
+        <h2>Gestión de Profesores y Correos</h2>
+        <p>Administra los docentes registrados y accede a su información institucional haciendo clic en sus nombres.</p>
+    </div>
+</div>
+
+<div class="config-container" style="grid-template-columns: 1fr 2fr; align-items: start;">
+    <!-- Formulario para agregar profesor -->
+    <div class="config-card">
+        <div class="config-header">
+            <i class="fa-solid fa-user-plus"></i>
+            <h3>Añadir / Asignar Docente</h3>
+        </div>
+        <form method="POST">
+            <div class="form-group">
+                <label>Nombre del Profesor:</label>
+                <input type="text" name="nombre" placeholder="Ej: Prof. Andrea Soto" required class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Correo Institucional:</label>
+                <input type="email" name="correo" placeholder="Ej: andrea.soto@colegio.cl" required class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Teléfono:</label>
+                <input type="text" name="telefono" placeholder="+56 9 1234 5678" required class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Curso Asignado:</label>
+                <select name="curso" required class="form-input">
+                    <option value="" disabled selected>Seleccione curso...</option>
+                    {% for c in cursos %}
+                        <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn-formal" style="width: 100%;">Guardar Profesor</button>
+        </form>
+    </div>
+
+    <!-- Lista de profesores actuales con enlaces a su perfil -->
+    <div class="table-container">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Docente</th>
+                    <th>Curso Asignado</th>
+                    <th>Correo Electrónico</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prof in profesores %}
+                <tr>
+                    <td><strong><a href="{{ url_for('ver_profesor', profesor_id=prof.id) }}" class="student-link">{{ prof.nombre }}</a></strong></td>
+                    <td>{{ prof.curso }}</td>
+                    <td><a href="mailto:{{ prof.correo }}" class="email-link"><i class="fa-regular fa-envelope"></i> {{ prof.correo }}</a></td>
+                    <td>
+                        <a href="{{ url_for('ver_profesor', profesor_id=prof.id) }}" class="btn-formal" style="padding: 5px 10px; font-size: 0.75rem; background: var(--secondary);">Ver Ficha <i class="fa-solid fa-chevron-right"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

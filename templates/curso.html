@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="course-header">
+    <div>
+        <h2>Curso: {{ curso }}</h2>
+        <p class="subtitle"><i class="fa-solid fa-chalkboard-user"></i> Docente a cargo: <strong>{{ profesor.nombre }}</strong> ({{ profesor.correo }})</p>
+    </div>
+    <a href="{{ url_for('index') }}" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Volver a Cursos</a>
+</div>
+
+<!-- Formulario para registrar incidencia con alerta JS -->
+<div class="config-card" style="margin-bottom: 25px; border-left: 5px solid var(--accent);">
+    <h3 style="margin-top: 0; font-size: 1.1rem; color: var(--primary);"><i class="fa-solid fa-pen-to-square"></i> Registrar Nueva Incidencia / Falta</h3>
+    <form action="{{ url_for('registrar_falta') }}" method="POST" class="falta-form" onsubmit="notificarEnvio(event, this)">
+        <input type="hidden" name="curso" value="{{ curso }}">
+        <div class="falta-inputs" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <select name="estudiante_id" required class="form-input" style="flex: 1.5;">
+                <option value="" disabled selected>Seleccione estudiante...</option>
+                {% for est in estudiantes %}
+                    <option value="{{ est.id }}">{{ est.nombre }}</option>
+                {% endfor %}
+            </select>
+            
+            <select name="tipo_registro" required class="form-input" style="flex: 1;">
+                <option value="" disabled selected>Categoría...</option>
+                <option value="atraso">Atraso</option>
+                <option value="convivencia">Convivencia Escolar</option>
+                <option value="enfermeria">Enfermería</option>
+                <option value="suspension">Suspensión</option>
+            </select>
+
+            <input type="text" name="detalle_falta" placeholder="Detalle (ej: Llegada tarde, indisciplina...)" required class="form-input" style="flex: 2;">
+            <button type="submit" class="btn-formal">Registrar y Notificar</button>
+        </div>
+    </form>
+</div>
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Atrasos</th>
+                <th>Convivencia</th>
+                <th>Enfermería</th>
+                <th>Suspensiones</th>
+                <th>Estado General</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for est in estudiantes %}
+            <tr>
+                <td><strong><a href="{{ url_for('ver_estudiante', nombre_curso=curso, estudiante_id=est.id) }}" class="student-link">{{ est.nombre }}</a></strong></td>
+                <td><span class="count-badge">{{ est.atrasos }}</span></td>
+                <td><span class="count-badge">{{ est.convivencia }}</span></td>
+                <td><span class="count-badge">{{ est.enfermeria }}</span></td>
+                <td><span class="count-badge {% if est.suspensiones > 0 %}badge-danger-count{% endif %}">{{ est.suspensiones }}</span></td>
+                <td>
+                    <span class="badge {{ est.estado | lower | replace('á', 'a') | replace(' ', '-') }}">
+                        {{ est.estado }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{{ url_for('ver_estudiante', nombre_curso=curso, estudiante_id=est.id) }}" class="btn-formal" style="padding: 6px 12px; font-size: 0.8rem; background: var(--secondary);">Ver Ficha <i class="fa-solid fa-chevron-right"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function notificarEnvio(event, form) {
+    // Muestra un toast interactivo antes de enviar al servidor
+    mostrarToast("¡Incidencia registrada! Correo enviado al docente de la asignatura.", "fa-paper-plane");
+}
+</script>
+{% endblock %}

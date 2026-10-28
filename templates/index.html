@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-flex">
+    <div>
+        <h2>Panel General de Cursos</h2>
+        <p>Sistema interactivo de monitoreo de asistencia, atrasos y convivencia escolar.</p>
+    </div>
+    <!-- Buscador interactivo -->
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Filtrar curso (ej: 3° Medio A)..." onkeyup="filtrarCursosAnimado()">
+    </div>
+</div>
+
+<div class="section-container">
+    <div class="section-title">
+        <h3><i class="fa-solid fa-book-open"></i> Educación Básica (1° a 8° Básico)</h3>
+    </div>
+    <div class="courses-vertical-list" id="listaBasica">
+        {% for curso in cursos_basica %}
+            <div class="course-row-card" data-curso="{{ curso | lower }}">
+                <div class="course-info">
+                    <span class="course-badge-level">Básica</span>
+                    <h4>{{ curso }}</h4>
+                </div>
+                <div class="course-action" style="display: flex; align-items: center; gap: 15px;">
+                    <span class="course-hint" style="color: var(--text-muted); font-size: 0.85rem;">Gestión activa</span>
+                    <a href="{{ url_for('ver_curso', nombre_curso=curso) }}" class="btn-formal">Abrir Curso <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="section-container" style="margin-top: 40px;">
+    <div class="section-title">
+        <h3><i class="fa-solid fa-school"></i> Educación Media (1° a 4° Medio)</h3>
+    </div>
+    <div class="courses-vertical-list" id="listaMedia">
+        {% for curso in cursos_media %}
+            <div class="course-row-card" data-curso="{{ curso | lower }}">
+                <div class="course-info">
+                    <span class="course-badge-level media">Media</span>
+                    <h4>{{ curso }}</h4>
+                </div>
+                <div class="course-action" style="display: flex; align-items: center; gap: 15px;">
+                    <span class="course-hint" style="color: var(--text-muted); font-size: 0.85rem;">Gestión activa</span>
+                    <a href="{{ url_for('ver_curso', nombre_curso=curso) }}" class="btn-formal">Abrir Curso <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Script de Filtrado Avanzado con Animación -->
+<script>
+function filtrarCursosAnimado() {
+    let input = document.getElementById('searchInput').value.toLowerCase();
+    let filas = document.querySelectorAll('.course-row-card');
+
+    filas.forEach(fila => {
+        let nombreCurso = fila.getAttribute('data-curso');
+        if (nombreCurso.includes(input)) {
+            fila.style.display = "flex";
+            fila.style.animation = "fadeIn 0.4s ease";
+        } else {
+            fila.style.display = "none";
+        }
+    });
+}
+</script>
+{% endblock %}

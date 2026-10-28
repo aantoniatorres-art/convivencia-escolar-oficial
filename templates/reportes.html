@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-flex">
+    <div>
+        <h2>Reportes y Estadísticas Generales</h2>
+        <p>Resumen general del comportamiento institucional en asistencia y atrasos.</p>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-school-flag"></i></div>
+        <div class="stat-info">
+            <h4>Total de Cursos</h4>
+            <p class="stat-number">{{ total_cursos }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-info">
+            <h4>Estudiantes Registrados</h4>
+            <p class="stat-number">{{ total_estudiantes }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="stat-info">
+            <h4>Casos Críticos</h4>
+            <p class="stat-number">12</p>
+        </div>
+    </div>
+</div>
+
+<div class="section-container" style="margin-top: 30px;">
+    <div class="section-title">
+        <h3><i class="fa-solid fa-file-arrow-down"></i> Exportar Informes del Establecimiento</h3>
+    </div>
+    <div class="export-box">
+        <p>Descarga la información consolidada en formatos estándar para análisis directivo o ministerial.</p>
+        <div class="export-buttons">
+            <button class="btn-formal" onclick="alert('Generando reporte PDF...')"><i class="fa-solid fa-file-pdf"></i> Exportar PDF</button>
+            <button class="btn-secondary" onclick="alert('Generando planilla Excel...')"><i class="fa-solid fa-file-excel"></i> Exportar Excel</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

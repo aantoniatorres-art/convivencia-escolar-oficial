@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="course-header">
+    <div>
+        <h2>Expediente del Docente</h2>
+        <p class="subtitle">Curso a cargo: <strong>{{ profesor.curso }}</strong></p>
+    </div>
+    <a href="{{ url_for('profesores') }}" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Volver a Profesores</a>
+</div>
+
+<!-- Información General y de Contacto -->
+<div class="config-card" style="margin-bottom: 25px;">
+    <div class="config-header">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <h3>{{ profesor.nombre }}</h3>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; font-size: 0.95rem; color: var(--text-muted);">
+        <div><i class="fa-regular fa-envelope"></i> <strong>Correo:</strong> <a href="mailto:{{ profesor.correo }}" class="email-link">{{ profesor.correo }}</a></div>
+        <div><i class="fa-solid fa-phone"></i> <strong>Teléfono:</strong> <a href="tel:{{ profesor.telefono }}" class="phone-link">{{ profesor.telefono }}</a></div>
+        <div><i class="fa-solid fa-building"></i> <strong>Departamento:</strong> <span style="color: #fff;">{{ profesor.departamento }}</span></div>
+        <div><i class="fa-solid fa-book"></i> <strong>Asignatura:</strong> <span style="color: #fff;">{{ profesor.asignatura }}</span></div>
+        <div><i class="fa-solid fa-briefcase"></i> <strong>Años de Servicio:</strong> <span style="color: #fff;">{{ profesor.anos_servicio }} años</span></div>
+        <div><i class="fa-solid fa-door-open"></i> <strong>Oficina / Sala:</strong> <span style="color: #fff;">{{ profesor.oficina }}</span></div>
+        <div><i class="fa-solid fa-clock"></i> <strong>Horario Atención:</strong> <span style="color: #fff;">{{ profesor.horario_atencion }}</span></div>
+        <div><strong>Estado Institucional:</strong> <span class="badge al-dia">{{ profesor.estado }}</span></div>
+    </div>
+</div>
+
+<!-- Estadísticas del Docente -->
+<div class="section-title" style="margin-bottom: 15px;">
+    <h3><i class="fa-solid fa-chart-line"></i> Estadísticas y Actividad Académica</h3>
+</div>
+
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-bell"></i></div>
+        <div class="stat-info">
+            <h4>Alertas Recibidas</h4>
+            <p class="stat-number">{{ profesor.alertas_enviadas }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);"><i class="fa-solid fa-clipboard-check"></i></div>
+        <div class="stat-info">
+            <h4>Registros Gestionados</h4>
+            <p class="stat-number">{{ profesor.asistencias_registradas }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

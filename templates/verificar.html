@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Código - Convivencia Escolar Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-body-formal">
+    <div class="login-card-formal">
+        <div class="login-icon-formal"><i class="fa-solid fa-envelope-circle-check"></i></div>
+        <h2>Verificación Segura</h2>
+        <p>Código enviado a: <br><strong>{{ correo }}</strong></p>
+        <p class="login-hint"><em>(Revisa tu terminal/consola de Python para ver el código simulado).</em></p>
+        
+        {% if error %}
+            <div class="alert-error">{{ error }}</div>
+        {% endif %}
+
+        <form action="{{ url_for('verificar') }}" method="POST">
+            <input type="hidden" name="correo" value="{{ correo }}">
+            <div class="form-group" style="text-align: left; margin-bottom: 20px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: #334155; display: block; margin-bottom: 8px;">Código de 4 Dígitos</label>
+                <input type="text" name="codigo" placeholder="0000" maxlength="4" required class="form-input" style="text-align: center; font-size: 1.4rem; letter-spacing: 8px; font-weight: bold;">
+            </div>
+            <button type="submit" class="btn-formal" style="width: 100%; padding: 12px; font-size: 0.95rem;">Ingresar al Sistema</button>
+        </form>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{{ url_for('login') }}" style="font-size: 0.85rem; color: #64748b; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Volver atrás</a>
+        </div>
+    </div>
+</body>
+</html>
