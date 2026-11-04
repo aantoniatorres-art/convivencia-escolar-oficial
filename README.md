@@ -12,25 +12,36 @@ El Proyecto Convivencia Escolar es una aplicación web diseñada para apoyar la 
 - **HTML5:** utilizado para construir las páginas de la aplicación.
 - **CSS3:** utilizado para definir los estilos visuales mediante `static/css/style.css`.
 - **Jinja2:** motor de plantillas utilizado por Flask para mostrar información dinámica en los archivos HTML.
-- **Sesiones de Flask:** utilizadas para mantener la sesión del usuario después de verificar su código de acceso.
+- **SQLite:** almacena la cuenta del administrador y su contraseña cifrada.
+- **Sesiones de Flask:** utilizadas para mantener la sesión del administrador.
 - **Entorno virtual de Python (`venv`):** utilizado para aislar las dependencias del proyecto.
 - **Visual Studio Code:** editor de código utilizado para el desarrollo.
 
 ## Base de datos y almacenamiento de información
 
-Actualmente, el proyecto no utiliza una base de datos persistente. La información se almacena temporalmente en estructuras de datos de Python:
+La cuenta del administrador se almacena en SQLite, en `instance/convivencia.sqlite3`. El resto de los datos de la aplicación se mantiene temporalmente en estructuras de Python:
 
 - `PROFESORES`: diccionario que contiene la información de los profesores.
 - `CURSOS`: diccionario que organiza los estudiantes según su curso.
-- `CODIGOS_ACCESO`: diccionario que almacena temporalmente los códigos de verificación.
-
-Los datos se generan y almacenan en memoria mientras se ejecuta la aplicación. Por este motivo, los cambios realizados y los registros creados se pierden al reiniciar el servidor.
+- Los cursos y sus registros se generan y almacenan en memoria. Por este motivo, esos cambios se pierden al reiniciar el servidor.
 
 La aplicación podría ampliarse en el futuro mediante una base de datos como MySQL o SQLite para conservar la información de manera permanente.
 
+## Creación del administrador
+
+Al iniciar, `inicializar_administrador()` ejecuta SQL para crear la tabla `administradores` si no existe y agrega la cuenta inicial si aún no está creada. La contraseña se guarda como hash, nunca en texto plano.
+
+Configura estas variables de entorno antes de iniciar la aplicación:
+
+- `ADMIN_USERNAME`: nombre de usuario inicial; por defecto es `Profesor/a`.
+- `ADMIN_PASSWORD`: contraseña inicial de al menos 10 caracteres. Configúrala directamente en Railway, no en el código ni en el repositorio.
+- `SECRET_KEY`: valor aleatorio privado para firmar las sesiones.
+- `SESSION_COOKIE_SECURE`: usa `true` en Railway.
+
+La cuenta se crea una sola vez. Cambiar `ADMIN_PASSWORD` después no reemplaza la contraseña de una cuenta ya creada.
+
 Método HTTP	Ruta	Funcionalidad
-GET, POST	/	Muestra el inicio de sesión y recibe el correo del usuario para generar un código de acceso.
-POST	/verificar	Comprueba el código de acceso ingresado y crea la sesión del usuario si es correcto.
+GET, POST	/	Muestra el inicio de sesión del administrador.
 GET	/panel	Muestra el panel principal con los cursos de básica y media.
 GET	/curso/<nombre_curso>	Muestra los estudiantes y el profesor asociado a un curso.
 GET	/curso/<nombre_curso>/estudiante/<estudiante_id>	Muestra la información detallada de un estudiante.

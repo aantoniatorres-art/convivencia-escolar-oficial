@@ -1,9 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from contextlib import closing
 import os
 import random
+import sqlite3
+import secrets
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'clave_secreta_convivencia_escolar'
+app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=os.environ.get('SESSION_COOKIE_SECURE', 'false').lower() == 'true'
+)
+
+DATABASE_PATH = os.environ.get(
+    'DATABASE_PATH',
+    os.path.join(os.path.dirname(__file__), 'instance', 'convivencia.sqlite3')
+)
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'Profesor/a').strip() or 'Profesor/a'
 
 niveles_basica = [f"{i}° Básico" for i in range(1, 9)]
 niveles_media = [f"{i}° Medio" for i in range(1, 5)]
@@ -90,43 +105,66 @@ for nivel in niveles_basica + niveles_media:
             })
             est_id += 1
 
-CODIGOS_ACCESO = {}
+def inicializar_administrador():
+    os.makedirs(os.path.dirname(os.path.abspath(DATABASE_PATH)), exist_ok=True)
+    contrasena = os.environ.get('ADMIN_PASSWORD', '')
+
+    with closing(sqlite3.connect(DATABASE_PATH, timeout=30)) as conexion, conexion:
+        conexion.execute('''
+            CREATE TABLE IF NOT EXISTS administradores (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                usuario TEXT NOT NULL UNIQUE,
+                contrasena_hash TEXT NOT NULL,
+                creado_en TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        existente = conexion.execute(
+            'SELECT 1 FROM administradores WHERE usuario = ?',
+            (ADMIN_USERNAME,)
+        ).fetchone()
+
+        if existente:
+            return True
+        if len(contrasena) < 10:
+            app.logger.warning(
+                'No se creó el administrador: define ADMIN_PASSWORD con al menos 10 caracteres.'
+            )
+            return False
+
+        conexion.execute('''
+            INSERT INTO administradores (usuario, contrasena_hash)
+            VALUES (?, ?)
+            ON CONFLICT(usuario) DO NOTHING
+        ''', (ADMIN_USERNAME, generate_password_hash(contrasena)))
+
+    return True
+
+
+ADMINISTRADOR_INICIALIZADO = inicializar_administrador()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
-        correo = request.form.get('correo')
-        profesor_encontrado = None
-        for datos in PROFESORES.values():
-            if datos['correo'] == correo:
-                profesor_encontrado = datos
-                break
-        
-        if profesor_encontrado or correo == "admin@colegio.cl":
-            codigo = str(random.randint(1000, 9999))
-            CODIGOS_ACCESO[correo] = codigo
-            
-            print("\n" + "="*50)
-            print(f"[CORREO SALIENTE] Destino: {correo}")
-            print(f"CÓDIGO DE ACCESO SEGURO: {codigo}")
-            print("="*50 + "\n")
-            
-            return render_template('verificar.html', correo=correo)
-        else:
-            return render_template('login.html', error="Correo no registrado en el sistema.")
-            
-    return render_template('login.html')
+        usuario = request.form.get('usuario', '').strip()
+        contrasena = request.form.get('contrasena', '')
 
-@app.route('/verificar', methods=['POST'])
-def verificar():
-    correo = request.form.get('correo')
-    codigo_ingresado = request.form.get('codigo')
-    
-    if correo in CODIGOS_ACCESO and CODIGOS_ACCESO[correo] == codigo_ingresado:
-        session['usuario'] = correo
-        return redirect(url_for('index'))
-    else:
-        return render_template('verificar.html', correo=correo, error="Código incorrecto o expirado.")
+        if not ADMINISTRADOR_INICIALIZADO:
+            error = 'El administrador no está configurado. Contacta al responsable del sistema.'
+        else:
+            with closing(sqlite3.connect(DATABASE_PATH, timeout=30)) as conexion, conexion:
+                fila = conexion.execute(
+                    'SELECT contrasena_hash FROM administradores WHERE usuario = ?',
+                    (usuario,)
+                ).fetchone()
+
+            if fila and check_password_hash(fila[0], contrasena):
+                session.clear()
+                session['usuario'] = usuario
+                return redirect(url_for('index'))
+            error = 'Usuario o contraseña incorrectos.'
+
+    return render_template('login.html', error=error)
 
 @app.route('/panel')
 def index():
