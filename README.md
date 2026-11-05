@@ -10,7 +10,7 @@ El Proyecto Convivencia Escolar es una aplicación web diseñada para apoyar la 
 - **Python:** lenguaje utilizado para desarrollar la lógica y el funcionamiento del servidor.
 - **Flask:** framework de Python utilizado para crear la aplicación web, definir las rutas y gestionar las solicitudes HTTP.
 - **HTML5:** utilizado para construir las páginas de la aplicación.
-- **CSS3:** utilizado para definir los estilos visuales mediante `static/css/style.css`.
+- **CSS3:** utilizado para definir los estilos visuales mediante `static/css/global.css`.
 - **Jinja2:** motor de plantillas utilizado por Flask para mostrar información dinámica en los archivos HTML.
 - **SQLite:** almacena la cuenta del administrador y su contraseña cifrada.
 - **Sesiones de Flask:** utilizadas para mantener la sesión del administrador.
@@ -56,7 +56,7 @@ proyecto-convivencia-escolar/
 ├── node_modules/
 ├── static/
 │   └── css/
-│       └── style.css
+│       └── global.css
 ├── templates/
 │   ├── base.html
 │   ├── configuracion.html
@@ -77,7 +77,7 @@ node_modules/: contiene dependencias de Node.js instaladas para el proyecto, si 
 
 static/: almacena archivos estáticos, como hojas de estilo, imágenes y scripts.
 
-static/css/style.css: contiene los estilos visuales de la aplicación.
+static/css/global.css: contiene los estilos visuales de la aplicación.
 
 templates/: contiene las plantillas HTML que se muestran al usuario.
 
