@@ -4,6 +4,7 @@ import os
 import random
 import sqlite3
 import secrets
+from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
@@ -101,6 +102,7 @@ for nivel in niveles_basica + niveles_media:
                 "convivencia": est_id % 3,
                 "enfermeria": est_id % 4,
                 "suspensiones": 1 if est_id % 9 == 0 else 0,
+                "registros": [],
                 "estado": "Al día" if (est_id % 4 != 0) else ("Observación" if est_id % 2 == 0 else "Crítico")
             })
             est_id += 1
@@ -195,7 +197,12 @@ def ver_estudiante(nombre_curso, estudiante_id):
     if not estudiante:
         return "Estudiante no encontrado", 404
         
-    return render_template('estudiante.html', curso=nombre_curso, estudiante=estudiante)
+    return render_template(
+        'estudiante.html',
+        curso=nombre_curso,
+        estudiante=estudiante,
+        registros=reversed(estudiante['registros'])
+    )
 
 @app.route('/profesores', methods=['GET', 'POST'])
 def profesores():
@@ -252,12 +259,21 @@ def registrar_falta():
     curso = request.form.get('curso')
     estudiante_id = int(request.form.get('estudiante_id'))
     tipo_registro = request.form.get('tipo_registro')
-    detalle_falta = request.form.get('detalle_falta')
+    detalle_falta = request.form.get('detalle_falta', '').strip()
+    categorias = {
+        'atraso': 'Atraso',
+        'convivencia': 'Convivencia Escolar',
+        'enfermeria': 'Enfermería',
+        'suspension': 'Suspensión'
+    }
     
     estudiante_encontrado = None
     for est in CURSOS.get(curso, []):
         if est['id'] == estudiante_id:
             estudiante_encontrado = est
+            if tipo_registro not in categorias or not detalle_falta:
+                return redirect(url_for('ver_curso', nombre_curso=curso))
+
             if tipo_registro == 'atraso':
                 est['atrasos'] += 1
             elif tipo_registro == 'convivencia':
@@ -266,6 +282,13 @@ def registrar_falta():
                 est['enfermeria'] += 1
             elif tipo_registro == 'suspension':
                 est['suspensiones'] += 1
+
+            est.setdefault('registros', []).append({
+                'categoria': categorias[tipo_registro],
+                'detalle': detalle_falta,
+                'fecha_hora': datetime.now().astimezone().strftime('%d-%m-%Y %H:%M'),
+                'profesor': session['usuario']
+            })
             
             est['estado'] = "Observación"
             break

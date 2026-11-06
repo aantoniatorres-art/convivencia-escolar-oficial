@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        try {
+            document.documentElement.dataset.theme = localStorage.getItem('convivencia-theme') || 'dark';
+        } catch (error) {
+            document.documentElement.dataset.theme = 'dark';
+        }
+    </script>
     <title>School Coexistence Pro - Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css', v='20261105') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css', v='20261106') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -57,5 +64,6 @@
             }, 4000);
         }
     </script>
+    <script src="{{ url_for('static', filename='js/global.js', v='20261106') }}" defer></script>
 </body>
 </html>

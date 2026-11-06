@@ -56,4 +56,38 @@
         </div>
     </div>
 </div>
+<div class="section-title records-heading">
+    <h3><i class="fa-solid fa-list-check"></i> Historial de registros</h3>
+    <span>{{ estudiante.registros | length }} registro(s)</span>
+</div>
+
+{% if estudiante.registros %}
+<div class="table-container records-table-container">
+    <table class="styled-table records-table">
+        <thead>
+            <tr>
+                <th>Fecha y hora</th>
+                <th>Tipo</th>
+                <th>Motivo / detalle</th>
+                <th>Registrado por</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registro in registros %}
+            <tr>
+                <td data-label="Fecha y hora"><time>{{ registro.fecha_hora }}</time></td>
+                <td data-label="Tipo"><span class="record-category">{{ registro.categoria }}</span></td>
+                <td data-label="Motivo / detalle" class="record-detail">{{ registro.detalle }}</td>
+                <td data-label="Registrado por">{{ registro.profesor }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="records-empty">
+    <i class="fa-regular fa-clipboard"></i>
+    <p>Aún no hay registros cualitativos para este estudiante.</p>
+</div>
+{% endif %}
 {% endblock %}
